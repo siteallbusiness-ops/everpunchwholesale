@@ -315,6 +315,10 @@ export function filterProductsByChargeSize(items: Product[], size: string): Prod
   return items.filter((p) => re.test(p.name));
 }
 
+export function getProductsByBrand(brandName: string): Product[] {
+  return products.filter((p) => p.brand === brandName);
+}
+
 // ─── Categories (with live counts from data) ─────────────────────────────────
 
 function countByCategory(slug: string) {
@@ -404,3 +408,7 @@ export const brands: Brand[] = [
   { id: 11, name: "Alpro", slug: "alpro", logo: "AL", description: "Plant-based milk alternatives", productCount: countByBrand("Alpro") },
   { id: 12, name: "Barista", slug: "barista", logo: "BR", description: "Professional barista supplies", productCount: countByBrand("Barista") },
 ];
+
+export function getBrandBySlug(slug: string): Brand | undefined {
+  return brands.find((b) => b.slug === slug);
+}
