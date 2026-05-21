@@ -6,6 +6,7 @@ import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, Phone, Heart,
 } from "lucide-react";
 import { contact } from "@/config/contact";
+import { useCart } from "@/context/CartContext";
 
 const navLinks = [
   {
@@ -32,6 +33,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { itemCount } = useCart();
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [signinOpen, setSigninOpen] = useState(false);
@@ -139,9 +141,11 @@ export default function Navbar() {
             <Link href="/cart" className="flex flex-col items-center gap-0.5 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors relative">
               <div className="relative">
                 <ShoppingCart className="w-5 h-5 text-gray-700" />
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                  0
-                </span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-0.5 bg-emerald-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {itemCount > 99 ? "99+" : itemCount}
+                  </span>
+                )}
               </div>
               <span className="text-[10px] text-gray-500 hidden md:block">Basket</span>
             </Link>

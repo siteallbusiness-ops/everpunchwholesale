@@ -107,6 +107,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <button className="w-10 h-12 text-lg font-bold text-gray-600 hover:bg-gray-50 transition-colors">+</button>
               </div>
               <AddToBasketButton
+                productSlug={product.slug}
                 disabled={!product.inStock}
                 size="md"
                 className="flex-1 font-bold"

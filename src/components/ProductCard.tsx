@@ -80,6 +80,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
           {/* CTA */}
           <AddToBasketButton
+            productSlug={product.slug}
             disabled={!product.inStock}
             className="mt-2 w-full"
           />
