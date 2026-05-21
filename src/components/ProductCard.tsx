@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
+import AddToBasketButton from "@/components/AddToBasketButton";
 import type { Product } from "@/data/products";
 
 const badgeColor: Record<string, string> = {
@@ -14,13 +15,6 @@ const badgeColor: Record<string, string> = {
 
 export default function ProductCard({ product }: { product: Product }) {
   const [wished, setWished] = useState(false);
-  const [added, setAdded] = useState(false);
-
-  function handleAdd(e: React.MouseEvent) {
-    e.preventDefault();
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1600);
-  }
 
   return (
     <Link href={`/products/${product.slug}`} className="group block">
@@ -85,18 +79,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
 
           {/* CTA */}
-          <button
-            onClick={handleAdd}
+          <AddToBasketButton
             disabled={!product.inStock}
-            className={`mt-2 w-full flex items-center justify-center gap-1.5 py-2 rounded text-sm font-semibold transition-all ${
-              added
-                ? "bg-violet-500 text-white"
-                : "bg-emerald-500 hover:bg-emerald-600 text-white"
-            } disabled:bg-gray-200 disabled:text-gray-400`}
-          >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            {added ? "Added!" : "Add to Basket"}
-          </button>
+            className="mt-2 w-full"
+          />
         </div>
       </div>
     </Link>

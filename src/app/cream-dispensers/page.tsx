@@ -1,9 +1,9 @@
-import { products } from "@/data/products";
+import { getProductsByCategory } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
 
 export default function CreamDispensersPage() {
-  const items = products.filter((p) => p.category === "cream-dispensers");
+  const items = getProductsByCategory("cream-dispensers");
 
   return (
     <>
@@ -18,7 +18,7 @@ export default function CreamDispensersPage() {
           <p className="text-sm text-emerald-800">
             For home use, a 0.5L dispenser is ideal. For professional kitchens or high-volume use,
             the 1L stainless steel models are recommended. All our dispensers are compatible with standard
-            8g N2O cream chargers.
+            8g N2O refill chargers.
           </p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">

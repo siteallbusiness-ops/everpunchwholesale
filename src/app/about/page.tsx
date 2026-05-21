@@ -21,7 +21,7 @@ export default function AboutPage() {
             <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
               <p>
                 Founded in 2009, EverPunch has grown from a small online retailer to the UK&apos;s #1
-                distributor of N2O cream chargers, cream dispensers, flavouring syrups and professional
+                distributor of N2O refill chargers, cream dispensers, flavouring syrups and professional
                 bar supplies.
               </p>
               <p>
@@ -85,6 +85,7 @@ export default function AboutPage() {
             in professional or domestic kitchen settings. We comply fully with the Psychoactive
             Substances Act 2016 and the Nitrous Oxide regulations in the UK.
             We do not sell to anyone under the age of 18.
+            Quality limit restrictions apply to individual purchases.
           </p>
         </div>
       </div>

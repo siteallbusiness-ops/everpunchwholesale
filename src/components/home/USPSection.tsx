@@ -23,7 +23,7 @@ export default function USPSection() {
     {
       icon: "📞",
       title: "Expert UK Support",
-      desc: "Talk to real people, Mon–Fri 9am–5:30pm. Trade accounts and bulk enquiries welcome.",
+      desc: "Talk to real people. Trade accounts and bulk enquiries welcome.",
     },
     {
       icon: "⭐",

@@ -5,22 +5,18 @@ import Link from "next/link";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, Phone, Heart,
 } from "lucide-react";
+import { contact } from "@/config/contact";
 
 const navLinks = [
   {
-    label: "Cream Chargers",
+    label: "Refill Chargers",
     href: "/cream-chargers",
-    sub: ["8g N2O Chargers", "8.2g Chargers", "8.4g Chargers", "8.5g Chargers", "Bulk Packs"],
+    sub: ["8g", "12g", "16g", "88g", "200g", "640g", "Fast Gas Cylinders"],
   },
   {
     label: "Dispensers",
     href: "/cream-dispensers",
     sub: ["0.5L Dispensers", "1L Dispensers", "Parts & Accessories"],
-  },
-  {
-    label: "Fast Gas",
-    href: "/fast-gas",
-    sub: ["580g Cylinders", "670g Cylinders", "Regulators"],
   },
   {
     label: "Syrups",
@@ -33,8 +29,6 @@ const navLinks = [
     sub: ["Coffee Beans", "Pods", "Milk Alternatives"],
   },
   { label: "Bar Supplies", href: "/bar-supplies", sub: [] },
-  { label: "Brands", href: "/brands", sub: [] },
-  { label: "Sale", href: "/sale", sub: [], highlight: true },
 ];
 
 export default function Navbar() {
@@ -60,7 +54,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-8">
           <span className="flex items-center gap-1.5">
             <Phone className="w-3 h-3 text-emerald-400" />
-            0800 123 4567 — Mon–Fri 9am–5:30pm
+            {contact.phone} (TBC)
           </span>
           <div className="flex gap-5">
             <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
@@ -88,7 +82,7 @@ export default function Navbar() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search for cream chargers, syrups, dispensers..."
+                placeholder="Search for refill chargers, syrups, dispensers..."
                 className="w-full pl-4 pr-14 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-400 transition-colors"
               />
               <button className="absolute right-0 top-0 bottom-0 bg-emerald-500 hover:bg-emerald-600 px-4 rounded-r-lg transition-colors">
@@ -174,11 +168,7 @@ export default function Navbar() {
               >
                 <Link
                   href={link.href}
-                  className={`flex items-center gap-1 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                    link.highlight
-                      ? "text-emerald-400 hover:text-emerald-300"
-                      : "text-gray-300 hover:text-white hover:bg-white/5"
-                  }`}
+                  className="flex items-center gap-1 px-4 py-3 text-sm font-medium transition-colors whitespace-nowrap text-gray-300 hover:text-white hover:bg-white/5"
                 >
                   {link.label}
                   {link.sub.length > 0 && (
@@ -222,9 +212,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
-              className={`block px-4 py-3 text-sm font-medium ${
-                link.highlight ? "text-emerald-500" : "text-gray-700"
-              }`}
+              className="block px-4 py-3 text-sm font-medium text-gray-700"
               onClick={() => setOpen(false)}
             >
               {link.label}

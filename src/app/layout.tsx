@@ -7,14 +7,14 @@ import Footer from "@/components/Footer";
 export const metadata: Metadata = {
   title: "EverPunch — UK #1 Barista & Bartender Supply",
   description:
-    "EverPunch: UK's leading distributor of N2O cream chargers, cream dispensers, flavouring syrups and bar supplies. Next day delivery available.",
+    "EverPunch: UK's leading distributor of N2O refill chargers, cream dispensers, flavouring syrups and bar supplies. Next day delivery available.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col">
-        <AnnouncementBar />
+        {/* <AnnouncementBar /> */}
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

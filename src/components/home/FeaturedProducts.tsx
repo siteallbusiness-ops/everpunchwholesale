@@ -1,9 +1,26 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
+const TABS: { label: string; slug: string | null }[] = [
+  { label: "All", slug: null },
+  { label: "Refill Chargers", slug: "cream-chargers" },
+  { label: "Dispensers", slug: "cream-dispensers" },
+  { label: "Syrups", slug: "syrups" },
+];
+
 export default function FeaturedProducts() {
-  const featured = products.slice(0, 8);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+
+  const featured = useMemo(() => {
+    const list = activeSlug
+      ? products.filter((p) => p.category === activeSlug)
+      : products;
+    return list.slice(0, 8);
+  }, [activeSlug]);
 
   return (
     <section className="py-12 bg-gray-50">
@@ -14,30 +31,36 @@ export default function FeaturedProducts() {
             <h2 className="text-2xl font-extrabold text-gray-900">Bestselling Products</h2>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            {["All", "Cream Chargers", "Dispensers", "Syrups"].map((t, i) => (
+            {TABS.map((t) => (
               <button
-                key={t}
+                key={t.label}
+                type="button"
+                onClick={() => setActiveSlug(t.slug)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-                  i === 0
+                  activeSlug === t.slug
                     ? "bg-emerald-500 text-white border-emerald-500"
                     : "bg-white text-gray-600 border-gray-200 hover:border-emerald-300 hover:text-emerald-600"
                 }`}
               >
-                {t}
+                {t.label}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        {featured.length === 0 ? (
+          <p className="text-center text-gray-500 py-8">No products in this category yet.</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {featured.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
 
         <div className="text-center mt-10">
           <Link
-            href="/shop"
+            href={activeSlug ? `/shop?category=${activeSlug}` : "/shop"}
             className="inline-flex items-center gap-2 bg-[#1A0536] hover:bg-[#2D1B4E] text-white font-bold px-8 py-3 rounded-lg transition-colors"
           >
             View All Products →

@@ -1,53 +1,37 @@
-import { products } from "@/data/products";
-import ProductCard from "@/components/ProductCard";
+import { getProductsByCategory } from "@/data/products";
 import PageHeader from "@/components/PageHeader";
+import CategoryProductListing, { type SubCategoryTab } from "@/components/CategoryProductListing";
 import Link from "next/link";
 
-const subCategories = [
-  { label: "8g N2O Chargers", href: "#8g" },
-  { label: "8.2g Chargers", href: "#8-2g" },
-  { label: "8.4g Chargers", href: "#8-4g" },
-  { label: "8.5g Chargers", href: "#8-5g" },
-  { label: "Bulk Packs", href: "#bulk" },
+const subCategories: SubCategoryTab[] = [
+  { label: "8g", href: "#8g", filterSize: "8g" },
+  { label: "12g", href: "#12g", filterSize: "12g" },
+  { label: "16g", href: "#16g", filterSize: "16g" },
+  { label: "88g", href: "#88g", filterSize: "88g" },
+  { label: "200g", href: "#200g", filterSize: "200g" },
+  { label: "640g", href: "#640g", filterSize: "640g" },
+  { label: "Bulk / Wholesale", href: "/wholesale" },
   { label: "Fast Gas Cylinders", href: "/fast-gas" },
 ];
 
 export default function CreamChargersPage() {
-  const chargers = products.filter((p) => p.category === "cream-chargers");
+  const chargers = getProductsByCategory("cream-chargers");
 
   return (
     <>
       <PageHeader
-        title="N2O Cream Chargers"
-        subtitle="Premium quality N2O cream chargers from the world's leading brands. Next day UK delivery on all orders."
-        crumbs={[{ label: "Cream Chargers" }]}
+        title="Refill Chargers"
+        subtitle="Premium quality N2O refill chargers from the world's leading brands. Next day UK delivery on all orders."
+        crumbs={[{ label: "Refill Chargers" }]}
       />
 
-      {/* Sub-category tabs */}
-      <div className="bg-white border-b border-gray-200 sticky top-[104px] z-40">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex gap-1 overflow-x-auto py-3 scrollbar-none">
-            {subCategories.map((s) => (
-              <Link
-                key={s.label}
-                href={s.href}
-                className="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 hover:border-emerald-400 hover:text-emerald-600 transition-colors"
-              >
-                {s.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Info banner */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center">
           <span className="text-3xl">🫧</span>
           <div className="flex-1">
-            <h3 className="font-bold text-gray-900 mb-1">About Our N2O Cream Chargers</h3>
+            <h3 className="font-bold text-gray-900 mb-1">About Our Refill Chargers</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              All our cream chargers contain food-grade nitrous oxide (N2O) in 100% recyclable steel cartridges.
+              All our refill chargers contain food-grade nitrous oxide (N2O) in 100% recyclable steel cartridges.
               Sold for culinary use only — whipped cream, mousses, espumas and molecular gastronomy.
               Compatible with all standard cream dispensers/whippers.
             </p>
@@ -58,23 +42,27 @@ export default function CreamChargersPage() {
           </div>
         </div>
 
-        {/* Products */}
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-gray-900">{chargers.length} Cream Chargers</h2>
-          <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-400">
-            <option>Sort: Best Selling</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-          </select>
+        <div className="bg-[#1A0536] text-white rounded-xl p-5 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h3 className="font-bold mb-1">Bulk &amp; wholesale orders</h3>
+            <p className="text-sm text-gray-300">
+              High-volume and trade pricing is enquiry only — not available to purchase online.
+            </p>
+          </div>
+          <Link
+            href="/wholesale"
+            className="shrink-0 inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-colors"
+          >
+            Request a quote
+          </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {chargers.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
+        <CategoryProductListing
+          products={chargers}
+          subCategories={subCategories}
+          emptyMessage="No refill chargers match this size. Try another filter or view all."
+        />
 
-        {/* FAQ */}
         <div className="mt-14 max-w-3xl">
           <h2 className="text-xl font-bold text-gray-900 mb-5">Frequently Asked Questions</h2>
           <div className="space-y-4">
@@ -84,12 +72,12 @@ export default function CreamChargersPage() {
                 a: "8g is the standard size and fits all dispensers. 8.5g chargers contain slightly more N2O, giving better output per charger — ideal for high-volume use.",
               },
               {
-                q: "Are your cream chargers food grade?",
+                q: "Are your refill chargers food grade?",
                 a: "Yes. All chargers are made from 100% recyclable food-grade steel and contain pharmaceutical-grade N2O.",
               },
               {
                 q: "Do you offer trade / wholesale pricing?",
-                a: "Yes! We offer significant discounts for businesses. Contact us or sign up for a trade account to unlock wholesale prices.",
+                a: "Yes. Bulk and wholesale orders are quote-only — submit an enquiry on our wholesale page and our team will respond with trade pricing.",
               },
             ].map((faq) => (
               <details key={faq.q} className="bg-white border border-gray-200 rounded-lg">

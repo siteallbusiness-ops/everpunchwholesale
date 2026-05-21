@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import { Phone, Mail, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Phone, Mail, MapPin, CheckCircle } from "lucide-react";
+import { contact } from "@/config/contact";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -28,10 +29,9 @@ export default function ContactPage() {
               <h2 className="text-lg font-bold text-gray-900 mb-4">Get In Touch</h2>
               <div className="space-y-4">
                 {[
-                  { icon: Phone, label: "Phone", value: "0800 123 4567", sub: "Free UK call" },
-                  { icon: Mail, label: "Email", value: "support@everpunch.co.uk", sub: "Reply within 2 hours" },
-                  { icon: MapPin, label: "Address", value: "London, United Kingdom", sub: "Registered in England & Wales" },
-                  { icon: Clock, label: "Opening Hours", value: "Mon–Fri: 9am – 5:30pm", sub: "Closed weekends & bank holidays" },
+                  { icon: Phone, label: "Phone", value: contact.phone, sub: "TBC" },
+                  { icon: Mail, label: "Email", value: contact.email, sub: "We aim to reply within 2 hours" },
+                  { icon: MapPin, label: "Address", value: contact.address, sub: "Registered in England & Wales" },
                 ].map(({ icon: Icon, label, value, sub }) => (
                   <div key={label} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                     <div className="w-9 h-9 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">

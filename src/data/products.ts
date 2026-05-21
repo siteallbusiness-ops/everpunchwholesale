@@ -49,9 +49,9 @@ const CATEGORY_MAP: Record<string, string> = {
   "Cream Chargers": "cream-chargers",
   "8g N2O Cream Chargers": "cream-chargers",
   "8g N2O Cream Chargers (Bulk)": "cream-chargers",
-  "8g CO2 Chargers": "cream-chargers",
-  "12g CO2 Chargers": "cream-chargers",
-  "16g CO2 Chargers": "cream-chargers",
+  "8g CO2 Chargers": "bar-supplies",
+  "12g CO2 Chargers": "bar-supplies",
+  "16g CO2 Chargers": "bar-supplies",
   "N2 Nitro Chargers": "cream-chargers",
   "SALE": "cream-chargers",
   "500ml Cream Whipper": "cream-dispensers",
@@ -240,7 +240,7 @@ function pseudoReviews(id: number): number {
   return 12 + (id * 37 + id % 13) % 980;
 }
 
-// ─── Transform raw JSON → Product[] ─────────────────────────────────────────
+// ─── Resolve category slug (handles mis-tagged source data) ─────────────────
 
 type RawProduct = {
   name: string;
@@ -252,11 +252,32 @@ type RawProduct = {
   category: string;
 };
 
+function resolveCategory(raw: RawProduct): string | undefined {
+  const mapped = CATEGORY_MAP[raw.category];
+  if (!mapped) return undefined;
+
+  if (raw.category === "Cream Chargers") {
+    const name = raw.name;
+    if (/CO2/i.test(name)) return "bar-supplies";
+    if (/whipper|dispenser|siphon|decorator tip|bundle/i.test(name)) return "cream-dispensers";
+    if (/fast\s*gas|640g|670g|580g|200g.*(tank|cylinder)|gold\s*whip.*200|mr\s*\-?\s*whip.*640/i.test(name)) {
+      return "fast-gas";
+    }
+    if (/N2O|cream charger/i.test(name)) return "cream-chargers";
+    if (/nitro/i.test(name)) return "bar-supplies";
+    return "cream-chargers";
+  }
+
+  return mapped;
+}
+
+// ─── Transform raw JSON → Product[] ─────────────────────────────────────────
+
 export const products: Product[] = (rawProducts as RawProduct[])
-  .filter((raw) => CATEGORY_MAP[raw.category] !== undefined)
+  .filter((raw) => resolveCategory(raw) !== undefined)
   .map((raw, index) => {
     const id = index + 1;
-    const category = CATEGORY_MAP[raw.category];
+    const category = resolveCategory(raw)!;
     const { salePrice, originalPrice, discount } = parsePrice(raw.price);
     const brand = extractBrand(raw.name);
 
@@ -284,6 +305,16 @@ export const products: Product[] = (rawProducts as RawProduct[])
 
 export const saleProducts = products.filter((p) => p.isOnSale);
 
+export function getProductsByCategory(slug: string): Product[] {
+  return products.filter((p) => p.category === slug);
+}
+
+export function filterProductsByChargeSize(items: Product[], size: string): Product[] {
+  const escaped = size.replace(".", "\\.");
+  const re = new RegExp(`\\b${escaped}\\b`, "i");
+  return items.filter((p) => re.test(p.name));
+}
+
 // ─── Categories (with live counts from data) ─────────────────────────────────
 
 function countByCategory(slug: string) {
@@ -293,13 +324,13 @@ function countByCategory(slug: string) {
 export const categories: Category[] = [
   {
     id: 1,
-    name: "Cream Chargers",
+    name: "Refill Chargers",
     slug: "cream-chargers",
-    description: "Premium N2O cream chargers from all leading brands",
+    description: "Premium N2O refill chargers from all leading brands",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop",
     icon: "🫧",
     count: countByCategory("cream-chargers"),
-    subcategories: ["8g N2O Chargers", "8.2g Chargers", "8.4g Chargers", "8.5g Chargers", "Bulk Packs"],
+    subcategories: ["8g", "12g", "16g", "88g", "200g", "640g"],
   },
   {
     id: 2,
@@ -362,11 +393,11 @@ function countByBrand(name: string) {
 export const brands: Brand[] = [
   { id: 1, name: "MONIN", slug: "monin", logo: "MN", description: "World's #1 flavouring syrup brand", productCount: countByBrand("MONIN") },
   { id: 2, name: "Simply", slug: "simply", logo: "SY", description: "Natural syrups and beverage ingredients", productCount: countByBrand("Simply") },
-  { id: 3, name: "AMOR", slug: "amor", logo: "AM", description: "Professional N2O cream chargers", productCount: countByBrand("AMOR") },
+  { id: 3, name: "AMOR", slug: "amor", logo: "AM", description: "Professional N2O refill chargers", productCount: countByBrand("AMOR") },
   { id: 4, name: "Sweetbird", slug: "sweetbird", logo: "SB", description: "Natural syrups for baristas", productCount: countByBrand("Sweetbird") },
   { id: 5, name: "Lavazza", slug: "lavazza", logo: "LV", description: "Italy's favourite coffee brand since 1895", productCount: countByBrand("Lavazza") },
   { id: 6, name: "iSi", slug: "isi", logo: "iSi", description: "World's leading cream whipper manufacturer", productCount: countByBrand("iSi") },
-  { id: 7, name: "MOSA", slug: "mosa", logo: "MS", description: "Premium quality cream chargers since 1948", productCount: countByBrand("MOSA") },
+  { id: 7, name: "MOSA", slug: "mosa", logo: "MS", description: "Premium quality refill chargers since 1948", productCount: countByBrand("MOSA") },
   { id: 8, name: "LISS", slug: "liss", logo: "LS", description: "Quality CO2 and N2O chargers", productCount: countByBrand("LISS") },
   { id: 9, name: "Pro Whip", slug: "pro-whip", logo: "PW", description: "Professional grade N2O chargers and dispensers", productCount: countByBrand("Pro Whip") },
   { id: 10, name: "Nescafe", slug: "nescafe", logo: "NC", description: "World's most popular instant coffee brand", productCount: countByBrand("Nescafe") },

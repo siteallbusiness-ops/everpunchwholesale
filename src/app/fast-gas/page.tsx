@@ -1,9 +1,9 @@
-import { products } from "@/data/products";
+import { getProductsByCategory } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
 
 export default function FastGasPage() {
-  const items = products.filter((p) => p.category === "fast-gas");
+  const items = getProductsByCategory("fast-gas");
 
   return (
     <>

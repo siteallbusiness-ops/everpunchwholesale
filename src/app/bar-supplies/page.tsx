@@ -1,9 +1,9 @@
-import { products } from "@/data/products";
+import { getProductsByCategory, products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
 
 export default function BarSuppliesPage() {
-  const items = products.filter((p) => p.category === "bar-supplies");
+  const items = getProductsByCategory("bar-supplies");
   const allItems = items.length ? items : products.slice(0, 4);
 
   return (

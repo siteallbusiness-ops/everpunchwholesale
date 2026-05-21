@@ -1,7 +1,8 @@
 import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
-import { ShoppingCart, Heart, Star, Truck, Shield, RefreshCw, CheckCircle } from "lucide-react";
+import { Heart, Star, Truck, Shield, RefreshCw, CheckCircle } from "lucide-react";
+import AddToBasketButton from "@/components/AddToBasketButton";
 import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
@@ -105,10 +106,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <span className="w-10 text-center font-semibold text-gray-900">1</span>
                 <button className="w-10 h-12 text-lg font-bold text-gray-600 hover:bg-gray-50 transition-colors">+</button>
               </div>
-              <button className="flex-1 flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors">
-                <ShoppingCart className="w-5 h-5" />
-                Add to Basket
-              </button>
+              <AddToBasketButton
+                disabled={!product.inStock}
+                size="md"
+                className="flex-1 font-bold"
+              />
               <button className="w-12 h-12 border border-gray-200 rounded-lg flex items-center justify-center hover:border-red-300 hover:text-red-500 transition-colors">
                 <Heart className="w-5 h-5" />
               </button>
@@ -149,15 +151,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="md:col-span-2">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Product Description</h2>
               <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
-            </div>
-            <div className="bg-gray-50 rounded-xl p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Delivery Information</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex gap-2"><span className="text-emerald-500">✓</span> Order before 4pm for next day delivery</li>
-                <li className="flex gap-2"><span className="text-emerald-500">✓</span> Free delivery on orders over £30</li>
-                <li className="flex gap-2"><span className="text-emerald-500">✓</span> Standard 2–3 day from £2.99</li>
-                <li className="flex gap-2"><span className="text-emerald-500">✓</span> UK mainland only</li>
-              </ul>
             </div>
           </div>
         </div>

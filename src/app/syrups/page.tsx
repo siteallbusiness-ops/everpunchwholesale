@@ -1,4 +1,4 @@
-import { products } from "@/data/products";
+import { getProductsByCategory } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
 import Link from "next/link";
@@ -11,7 +11,7 @@ const syrupBrands = [
 ];
 
 export default function SyrupsPage() {
-  const items = products.filter((p) => p.category === "syrups");
+  const items = getProductsByCategory("syrups");
 
   return (
     <>

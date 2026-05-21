@@ -1,15 +1,18 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, Globe, Share2, Rss, MessageSquareShare } from "lucide-react";
+import { Phone, Mail, MapPin, Globe, Share2, Rss, MessageSquareShare } from "lucide-react";
+import { contact } from "@/config/contact";
 
 const footerSections = [
   {
-    title: "Cream Chargers",
+    title: "Refill Chargers",
     links: [
-      { label: "8g N2O Chargers", href: "/cream-chargers" },
-      { label: "8.2g Chargers", href: "/cream-chargers" },
-      { label: "8.4g Chargers", href: "/cream-chargers" },
-      { label: "8.5g Chargers", href: "/cream-chargers" },
-      { label: "Bulk / Wholesale", href: "/cream-chargers" },
+      { label: "8g", href: "/cream-chargers#8g" },
+      { label: "12g", href: "/cream-chargers#12g" },
+      { label: "16g", href: "/cream-chargers#16g" },
+      { label: "88g", href: "/cream-chargers#88g" },
+      { label: "200g", href: "/cream-chargers#200g" },
+      { label: "640g", href: "/cream-chargers#640g" },
+      { label: "Bulk / Wholesale", href: "/wholesale" },
       { label: "Fast Gas Cylinders", href: "/fast-gas" },
     ],
   },
@@ -39,9 +42,6 @@ const footerSections = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Contact Us", href: "/contact" },
-      { label: "Delivery Info", href: "/delivery" },
-      { label: "Returns Policy", href: "/returns" },
-      { label: "Privacy Policy", href: "/privacy" },
     ],
   },
 ];
@@ -88,21 +88,24 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-gray-400 max-w-xs">
-                The UK&apos;s leading distributor of N2O cream chargers, dispensers, flavouring syrups
+                The UK&apos;s leading distributor of N2O refill chargers, dispensers, flavouring syrups
                 and professional bar supplies. Trusted by over 50,000 customers since 2009.
               </p>
             </div>
 
             <div className="space-y-2">
               {[
-                { icon: Phone, text: "0800 123 4567" },
-                { icon: Mail, text: "support@everpunch.co.uk" },
-                { icon: MapPin, text: "London, United Kingdom" },
-                { icon: Clock, text: "Mon–Fri: 9am – 5:30pm" },
-              ].map(({ icon: Icon, text }) => (
+                { icon: Phone, text: contact.phone },
+                { icon: Mail, text: contact.email, href: `mailto:${contact.email}` },
+                { icon: MapPin, text: contact.address },
+              ].map(({ icon: Icon, text, href }) => (
                 <div key={text} className="flex items-center gap-2 text-sm">
                   <Icon className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{text}</span>
+                  {href ? (
+                    <a href={href} className="hover:text-white transition-colors">{text}</a>
+                  ) : (
+                    <span>{text}</span>
+                  )}
                 </div>
               ))}
             </div>
