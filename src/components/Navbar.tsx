@@ -12,7 +12,7 @@ const navLinks = [
   {
     label: "Refill Chargers",
     href: "/cream-chargers",
-    sub: ["8g", "12g", "16g", "88g", "200g", "640g", "Fast Gas Cylinders"],
+    sub: ["8g", "12g", "16g", "88g", "640g"],
   },
   {
     label: "Dispensers",

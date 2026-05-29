@@ -132,12 +132,12 @@ export default function CartPage() {
                   <span className="font-semibold text-gray-900">£{subtotal.toFixed(2)}</span>
                 </div>
                 <p className="text-xs text-gray-400 mb-4">Ex VAT · Delivery calculated at checkout</p>
-                <button
-                  type="button"
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors mb-3"
+                <Link
+                  href="/checkout"
+                  className="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition-colors mb-3"
                 >
                   Proceed to Checkout
-                </button>
+                </Link>
                 <Link
                   href="/shop"
                   className="block w-full text-center text-sm text-emerald-600 hover:underline font-medium"

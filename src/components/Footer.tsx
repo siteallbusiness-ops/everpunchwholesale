@@ -13,7 +13,6 @@ const footerSections = [
       { label: "200g", href: "/cream-chargers#200g" },
       { label: "640g", href: "/cream-chargers#640g" },
       { label: "Bulk / Wholesale", href: "/wholesale" },
-      { label: "Fast Gas Cylinders", href: "/fast-gas" },
     ],
   },
   {
@@ -42,6 +41,9 @@ const footerSections = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Contact Us", href: "/contact" },
+      { label: "Delivery Info", href: "/delivery-info" },
+      { label: "Returns Policy", href: "/returns-policy" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
     ],
   },
 ];

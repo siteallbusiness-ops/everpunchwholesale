@@ -8,10 +8,8 @@ const subCategories: SubCategoryTab[] = [
   { label: "12g", href: "#12g", filterSize: "12g" },
   { label: "16g", href: "#16g", filterSize: "16g" },
   { label: "88g", href: "#88g", filterSize: "88g" },
-  { label: "200g", href: "#200g", filterSize: "200g" },
   { label: "640g", href: "#640g", filterSize: "640g" },
   { label: "Bulk / Wholesale", href: "/wholesale" },
-  { label: "Fast Gas Cylinders", href: "/fast-gas" },
 ];
 
 export default function CreamChargersPage() {

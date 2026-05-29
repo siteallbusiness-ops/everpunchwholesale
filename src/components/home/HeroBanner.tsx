@@ -48,7 +48,7 @@ export default function HeroBanner() {
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: "Refill Chargers", sub: "From £7.49 / 24 pack", href: "/cream-chargers", bg: "from-emerald-600 to-emerald-800", icon: "🫧" },
-              { label: "Fast Gas Tanks", sub: "From £27.99 / 580g", href: "/fast-gas", bg: "from-violet-600 to-violet-800", icon: "⚡" },
+              { label: "Bar Supplies", sub: "CO2, siphons & more", href: "/bar-supplies", bg: "from-violet-600 to-violet-800", icon: "🍹" },
               { label: "MONIN Syrups", sub: "200+ flavours", href: "/syrups", bg: "from-teal-600 to-teal-800", icon: "🍯" },
               { label: "Cream Dispensers", sub: "Pro grade, all brands", href: "/cream-dispensers", bg: "from-indigo-700 to-indigo-900", icon: "🍶" },
             ].map((c) => (

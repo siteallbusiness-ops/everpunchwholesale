@@ -258,7 +258,8 @@ function resolveCategory(raw: RawProduct): string | undefined {
 
   if (raw.category === "Cream Chargers") {
     const name = raw.name;
-    if (/CO2/i.test(name)) return "bar-supplies";
+    // 12g, 16g and 88g CO2 cartridges belong in refill chargers; only 8g soda/tyre CO2 goes to bar-supplies
+    if (/CO2/i.test(name) && !/\b(12g|16g|88g)\b/i.test(name)) return "bar-supplies";
     if (/whipper|dispenser|siphon|decorator tip|bundle/i.test(name)) return "cream-dispensers";
     if (/fast\s*gas|640g|670g|580g|200g.*(tank|cylinder)|gold\s*whip.*200|mr\s*\-?\s*whip.*640/i.test(name)) {
       return "fast-gas";

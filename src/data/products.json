@@ -72,15 +72,6 @@
     "category": "Cream Chargers"
   },
   {
-    "name": "Pro Flate CO2 Tyre Inflator Kit",
-    "productUrl": "https://www.discountcream.co.uk/pro-flate-co2-inflator-kit",
-    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/pro-flate-kit-001_150x150.jpg",
-    "price": "£3.99(£4.79 inc VAT)",
-    "sku": "pro-flate-co2-inflator-kit",
-    "inStock": true,
-    "category": "Cream Chargers"
-  },
-  {
     "name": "iSi CO2 Cartridges (10 x 8.4g)",
     "productUrl": "https://www.discountcream.co.uk/isi-soda-chargers-10-2394",
     "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/ISI_Soda_charger_WHIP014_001_150x150.jpg",
@@ -511,24 +502,6 @@
     "sku": "mosa-n2o-charger-holder-black",
     "inStock": true,
     "category": "8g CO2 Chargers"
-  },
-  {
-    "name": "12g to 88g CO2 Cartridge Adapter - Black",
-    "productUrl": "https://www.discountcream.co.uk/12g-to-88g-co2-cartridge-adapter-black",
-    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/12g-to-88g-CO2-adapter-ADAP001-001_150x150.jpg",
-    "price": "£10.99(£13.19 inc VAT)",
-    "sku": "12g-to-88g-co2-cartridge-adapter-black",
-    "inStock": true,
-    "category": "12g CO2 Chargers"
-  },
-  {
-    "name": "CO2 Tyre Inflator Kit",
-    "productUrl": "https://www.discountcream.co.uk/co2-tyre-inflator-kit",
-    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/co2-tyre-inflator-INFL002-001_150x150.jpg",
-    "price": "£3.49(£4.19 inc VAT)",
-    "sku": "co2-tyre-inflator-kit",
-    "inStock": true,
-    "category": "16g CO2 Chargers"
   },
   {
     "name": "Nitra Professional N2O Cream Chargers (24 x 8.5g)",
@@ -12112,5 +12085,23 @@
     "sku": "mosa-co2-tyre-inflator-black",
     "inStock": true,
     "category": "SALE"
+  },
+  {
+    "name": "SmartWhip N2O Cylinder (640g)",
+    "productUrl": "https://www.discountcream.co.uk/smartwhip-n2o-cylinder-640g",
+    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/Mr-Whip-N2O-MRWH001-001_150x150.jpg",
+    "price": "£17.99(£21.59 inc VAT)",
+    "sku": "smartwhip-n2o-cylinder-640g",
+    "inStock": true,
+    "category": "8g N2O Cream Chargers"
+  },
+  {
+    "name": "SmartWhip N2O Cylinders (6 x 640g)",
+    "productUrl": "https://www.discountcream.co.uk/smartwhip-n2o-cylinders-6-x-640g",
+    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/Mr-Whip-N2O-MRWH001-002_150x150.jpg",
+    "price": "£98.94(£118.73 inc VAT)",
+    "sku": "smartwhip-n2o-cylinders-6-x-640g",
+    "inStock": true,
+    "category": "8g N2O Cream Chargers"
   }
 ]
