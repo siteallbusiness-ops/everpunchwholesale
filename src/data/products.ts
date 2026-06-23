@@ -310,6 +310,33 @@ export function getProductsByCategory(slug: string): Product[] {
   return products.filter((p) => p.category === slug);
 }
 
+/** All N2O and CO2 refill cartridges for the Refill Chargers listing */
+export function getRefillChargerProducts(): Product[] {
+  return products.filter(
+    (p) =>
+      p.category === "cream-chargers" ||
+      (p.category === "bar-supplies" && /\bCO2\b/i.test(p.name)),
+  );
+}
+
+export function isCo2RefillProduct(product: Product): boolean {
+  return /\bCO2\b/i.test(product.name);
+}
+
+export function isN2oRefillProduct(product: Product): boolean {
+  if (isCo2RefillProduct(product)) return false;
+  return /\bN2O\b|cream charger|nitro charger/i.test(product.name);
+}
+
+export function filterProductsByGasType(
+  items: Product[],
+  gas: "co2" | "n2o",
+): Product[] {
+  return items.filter((p) =>
+    gas === "co2" ? isCo2RefillProduct(p) : isN2oRefillProduct(p),
+  );
+}
+
 export function filterProductsByChargeSize(items: Product[], size: string): Product[] {
   const escaped = size.replace(".", "\\.");
   const re = new RegExp(`\\b${escaped}\\b`, "i");
@@ -331,11 +358,11 @@ export const categories: Category[] = [
     id: 1,
     name: "Refill Chargers",
     slug: "cream-chargers",
-    description: "Premium N2O refill chargers from all leading brands",
+    description: "Premium N2O and CO2 refill chargers from all leading brands",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop",
     icon: "🫧",
     count: countByCategory("cream-chargers"),
-    subcategories: ["8g", "12g", "16g", "88g", "200g", "640g"],
+    subcategories: ["N2O Refill", "CO2 Refill", "8g", "12g", "16g", "88g", "200g", "640g"],
   },
   {
     id: 2,

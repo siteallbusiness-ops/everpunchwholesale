@@ -1,9 +1,11 @@
-import { getProductsByCategory } from "@/data/products";
+import { getRefillChargerProducts } from "@/data/products";
 import PageHeader from "@/components/PageHeader";
 import CategoryProductListing, { type SubCategoryTab } from "@/components/CategoryProductListing";
 import Link from "next/link";
 
 const subCategories: SubCategoryTab[] = [
+  { label: "N2O Refill", href: "#n2o", filterGas: "n2o" },
+  { label: "CO2 Refill", href: "#co2", filterGas: "co2" },
   { label: "8g", href: "#8g", filterSize: "8g" },
   { label: "12g", href: "#12g", filterSize: "12g" },
   { label: "16g", href: "#16g", filterSize: "16g" },
@@ -13,13 +15,13 @@ const subCategories: SubCategoryTab[] = [
 ];
 
 export default function CreamChargersPage() {
-  const chargers = getProductsByCategory("cream-chargers");
+  const chargers = getRefillChargerProducts();
 
   return (
     <>
       <PageHeader
         title="Refill Chargers"
-        subtitle="Premium quality N2O refill chargers from the world's leading brands. Next day UK delivery on all orders."
+        subtitle="Premium quality N2O and CO2 refill chargers from the world's leading brands. Next day UK delivery on all orders."
         crumbs={[{ label: "Refill Chargers" }]}
       />
 
@@ -29,9 +31,9 @@ export default function CreamChargersPage() {
           <div className="flex-1">
             <h3 className="font-bold text-gray-900 mb-1">About Our Refill Chargers</h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              All our refill chargers contain food-grade nitrous oxide (N2O) in 100% recyclable steel cartridges.
-              Sold for culinary use only — whipped cream, mousses, espumas and molecular gastronomy.
-              Compatible with all standard cream dispensers/whippers.
+              Food-grade N2O and CO2 refill chargers in 100% recyclable steel cartridges.
+              N2O for whipped cream, mousses and espumas; CO2 for soda siphons and carbonation.
+              Compatible with all standard dispensers and siphons.
             </p>
           </div>
           <div className="shrink-0 text-right">
@@ -58,7 +60,7 @@ export default function CreamChargersPage() {
         <CategoryProductListing
           products={chargers}
           subCategories={subCategories}
-          emptyMessage="No refill chargers match this size. Try another filter or view all."
+          emptyMessage="No refill chargers match this filter. Try another option or view all."
         />
 
         <div className="mt-14 max-w-3xl">

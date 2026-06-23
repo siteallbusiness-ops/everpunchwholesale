@@ -6,6 +6,8 @@ const footerSections = [
   {
     title: "Refill Chargers",
     links: [
+      { label: "N2O Refill", href: "/cream-chargers#n2o" },
+      { label: "CO2 Refill", href: "/cream-chargers#co2" },
       { label: "8g", href: "/cream-chargers#8g" },
       { label: "12g", href: "/cream-chargers#12g" },
       { label: "16g", href: "/cream-chargers#16g" },

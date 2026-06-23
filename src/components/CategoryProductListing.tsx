@@ -4,14 +4,19 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Product } from "@/data/products";
-import { filterProductsByChargeSize } from "@/data/products";
+import {
+  filterProductsByChargeSize,
+  filterProductsByGasType,
+} from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 export type SubCategoryTab = {
   label: string;
   href: string;
-  /** Hash fragment without #, e.g. "8g" — filters products when set */
+  /** Hash fragment without #, e.g. "8g" — filters by cartridge size */
   filterSize?: string;
+  /** "co2" | "n2o" — filters by gas type */
+  filterGas?: "co2" | "n2o";
 };
 
 type Props = {
@@ -30,9 +35,23 @@ export default function CategoryProductListing({
 
   useEffect(() => {
     function syncFromHash() {
-      const hash = window.location.hash.replace("#", "");
-      const tab = subCategories.find((s) => s.filterSize === hash);
-      setActiveFilter(tab?.filterSize ?? null);
+      const raw = window.location.hash.replace(/^#/, "");
+      if (!raw) {
+        setActiveFilter(null);
+        return;
+      }
+      // Prefer the last matching segment (handles malformed URLs like #640g#8g)
+      const segments = raw.split("#");
+      for (let i = segments.length - 1; i >= 0; i--) {
+        const tab = subCategories.find(
+          (s) => s.filterSize === segments[i] || s.filterGas === segments[i],
+        );
+        if (tab?.filterSize || tab?.filterGas) {
+          setActiveFilter(tab.filterSize ?? tab.filterGas ?? null);
+          return;
+        }
+      }
+      setActiveFilter(null);
     }
     syncFromHash();
     window.addEventListener("hashchange", syncFromHash);
@@ -41,8 +60,17 @@ export default function CategoryProductListing({
 
   const filtered = useMemo(() => {
     if (!activeFilter) return allProducts;
+    const gasTab = subCategories.find((s) => s.filterGas === activeFilter);
+    if (gasTab?.filterGas) {
+      return filterProductsByGasType(allProducts, gasTab.filterGas);
+    }
     return filterProductsByChargeSize(allProducts, activeFilter);
-  }, [allProducts, activeFilter]);
+  }, [allProducts, activeFilter, subCategories]);
+
+  const activeLabel =
+    subCategories.find(
+      (s) => s.filterSize === activeFilter || s.filterGas === activeFilter,
+    )?.label ?? activeFilter;
 
   return (
     <>
@@ -66,7 +94,10 @@ export default function CategoryProductListing({
               </button>
               {subCategories.map((s) => {
                 const isExternal = s.href.startsWith("/");
-                const isActive = Boolean(s.filterSize && activeFilter === s.filterSize);
+                const isActive = Boolean(
+                  (s.filterSize && activeFilter === s.filterSize) ||
+                    (s.filterGas && activeFilter === s.filterGas),
+                );
 
                 if (isExternal) {
                   return (
@@ -85,10 +116,10 @@ export default function CategoryProductListing({
                     key={s.label}
                     type="button"
                     onClick={() => {
-                      const size = s.filterSize ?? null;
-                      setActiveFilter(size);
-                      if (size) {
-                        window.history.replaceState(null, "", `${pathname}#${size}`);
+                      const key = s.filterSize ?? s.filterGas ?? null;
+                      setActiveFilter(key);
+                      if (key) {
+                        window.history.replaceState(null, "", `${pathname}#${key}`);
                       } else {
                         window.history.replaceState(null, "", pathname);
                       }
@@ -111,7 +142,7 @@ export default function CategoryProductListing({
       <div className="flex items-center justify-between mb-5">
         <p className="text-sm text-gray-500">
           {filtered.length} product{filtered.length !== 1 ? "s" : ""}
-          {activeFilter ? ` · ${activeFilter}` : ""}
+          {activeFilter ? ` · ${activeLabel}` : ""}
         </p>
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, Phone, Heart,
 } from "lucide-react";
@@ -12,7 +13,7 @@ const navLinks = [
   {
     label: "Refill Chargers",
     href: "/cream-chargers",
-    sub: ["8g", "12g", "16g", "88g", "640g"],
+    sub: ["N2O Refill", "CO2 Refill", "8g", "12g", "16g", "88g", "640g"],
   },
   {
     label: "Dispensers",
@@ -32,7 +33,35 @@ const navLinks = [
   { label: "Bar Supplies", href: "/bar-supplies", sub: [] },
 ];
 
+function subLinkHash(sub: string) {
+  const gasMap: Record<string, string> = {
+    "n2o refill": "n2o",
+    "co2 refill": "co2",
+  };
+  const key = sub.toLowerCase();
+  return gasMap[key] ?? key.replace(/\s+/g, "-");
+}
+
+/** Same-page hash links must replace the fragment — Next.js Link appends otherwise. */
+function handleSubLinkClick(
+  e: React.MouseEvent<HTMLAnchorElement>,
+  pathname: string,
+  href: string,
+) {
+  const hashIndex = href.indexOf("#");
+  if (hashIndex === -1) return;
+
+  const path = href.slice(0, hashIndex);
+  const hash = href.slice(hashIndex + 1);
+  if (!hash || pathname !== path) return;
+
+  e.preventDefault();
+  window.history.replaceState(null, "", href);
+  window.dispatchEvent(new HashChangeEvent("hashchange"));
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
   const { itemCount } = useCart();
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -182,15 +211,19 @@ export default function Navbar() {
 
                 {link.sub.length > 0 && activeDropdown === link.label && (
                   <div className="absolute top-full left-0 bg-white shadow-xl rounded-b-lg border border-gray-100 min-w-[200px] py-2 z-50">
-                    {link.sub.map((sub) => (
-                      <Link
-                        key={sub}
-                        href={`${link.href}#${sub.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                      >
-                        {sub}
-                      </Link>
-                    ))}
+                    {link.sub.map((sub) => {
+                      const subHref = `${link.href}#${subLinkHash(sub)}`;
+                      return (
+                        <Link
+                          key={sub}
+                          href={subHref}
+                          onClick={(e) => handleSubLinkClick(e, pathname, subHref)}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                        >
+                          {sub}
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
