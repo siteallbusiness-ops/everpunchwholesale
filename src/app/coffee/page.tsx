@@ -1,6 +1,12 @@
 import { getProductsByCategory } from "@/data/products";
-import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
+import CategoryProductListing, { type SubCategoryTab } from "@/components/CategoryProductListing";
+
+const subCategories: SubCategoryTab[] = [
+  { label: "Coffee Beans", href: "#beans", filterKey: "beans" },
+  { label: "Pods", href: "#pods", filterKey: "pods" },
+  { label: "Milk Alternatives", href: "#milk-alternatives", filterKey: "milk-alternatives" },
+];
 
 export default function CoffeePage() {
   const items = getProductsByCategory("coffee");
@@ -13,9 +19,12 @@ export default function CoffeePage() {
         crumbs={[{ label: "Coffee" }]}
       />
       <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {items.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+        <CategoryProductListing
+          products={items}
+          subCategories={subCategories}
+          filterMode="coffee"
+          emptyMessage="No coffee products match this filter. Try another category or view all."
+        />
       </div>
     </>
   );

@@ -7,34 +7,50 @@ import type { Product } from "@/data/products";
 import {
   filterProductsByChargeSize,
   filterProductsByGasType,
+  filterSyrupProducts,
+  filterCoffeeProducts,
 } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
 export type SubCategoryTab = {
   label: string;
   href: string;
-  /** Hash fragment without #, e.g. "8g" — filters by cartridge size */
+  /** Hash fragment without # — primary filter key */
+  filterKey?: string;
+  /** @deprecated use filterKey — filters by cartridge size */
   filterSize?: string;
-  /** "co2" | "n2o" — filters by gas type */
+  /** @deprecated use filterKey — filters by gas type */
   filterGas?: "co2" | "n2o";
 };
+
+export type ProductFilterMode = "refill" | "syrup" | "coffee";
+
+function tabFilterKey(tab: SubCategoryTab): string | undefined {
+  return tab.filterKey ?? tab.filterSize ?? tab.filterGas;
+}
+
+function scrollToPageTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 type Props = {
   products: Product[];
   subCategories?: SubCategoryTab[];
+  filterMode?: ProductFilterMode;
   emptyMessage?: string;
 };
 
 export default function CategoryProductListing({
   products: allProducts,
   subCategories = [],
+  filterMode = "refill",
   emptyMessage = "No products match this filter.",
 }: Props) {
   const pathname = usePathname();
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    function syncFromHash() {
+    function syncFromHash(scroll = false) {
       const raw = window.location.hash.replace(/^#/, "");
       if (!raw) {
         setActiveFilter(null);
@@ -43,34 +59,41 @@ export default function CategoryProductListing({
       // Prefer the last matching segment (handles malformed URLs like #640g#8g)
       const segments = raw.split("#");
       for (let i = segments.length - 1; i >= 0; i--) {
-        const tab = subCategories.find(
-          (s) => s.filterSize === segments[i] || s.filterGas === segments[i],
-        );
-        if (tab?.filterSize || tab?.filterGas) {
-          setActiveFilter(tab.filterSize ?? tab.filterGas ?? null);
+        const tab = subCategories.find((s) => tabFilterKey(s) === segments[i]);
+        const key = tab ? tabFilterKey(tab) : undefined;
+        if (key) {
+          setActiveFilter(key);
+          if (scroll) scrollToPageTop();
           return;
         }
       }
       setActiveFilter(null);
     }
-    syncFromHash();
-    window.addEventListener("hashchange", syncFromHash);
-    return () => window.removeEventListener("hashchange", syncFromHash);
+    syncFromHash(true);
+    const onHashChange = () => syncFromHash(true);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, [subCategories]);
 
   const filtered = useMemo(() => {
     if (!activeFilter) return allProducts;
-    const gasTab = subCategories.find((s) => s.filterGas === activeFilter);
-    if (gasTab?.filterGas) {
-      return filterProductsByGasType(allProducts, gasTab.filterGas);
+    switch (filterMode) {
+      case "syrup":
+        return filterSyrupProducts(allProducts, activeFilter);
+      case "coffee":
+        return filterCoffeeProducts(allProducts, activeFilter);
+      default: {
+        const gasTab = subCategories.find((s) => s.filterGas === activeFilter);
+        if (gasTab?.filterGas) {
+          return filterProductsByGasType(allProducts, gasTab.filterGas);
+        }
+        return filterProductsByChargeSize(allProducts, activeFilter);
+      }
     }
-    return filterProductsByChargeSize(allProducts, activeFilter);
-  }, [allProducts, activeFilter, subCategories]);
+  }, [allProducts, activeFilter, subCategories, filterMode]);
 
   const activeLabel =
-    subCategories.find(
-      (s) => s.filterSize === activeFilter || s.filterGas === activeFilter,
-    )?.label ?? activeFilter;
+    subCategories.find((s) => tabFilterKey(s) === activeFilter)?.label ?? activeFilter;
 
   return (
     <>
@@ -94,10 +117,8 @@ export default function CategoryProductListing({
               </button>
               {subCategories.map((s) => {
                 const isExternal = s.href.startsWith("/");
-                const isActive = Boolean(
-                  (s.filterSize && activeFilter === s.filterSize) ||
-                    (s.filterGas && activeFilter === s.filterGas),
-                );
+                const key = tabFilterKey(s);
+                const isActive = Boolean(key && activeFilter === key);
 
                 if (isExternal) {
                   return (
@@ -116,10 +137,10 @@ export default function CategoryProductListing({
                     key={s.label}
                     type="button"
                     onClick={() => {
-                      const key = s.filterSize ?? s.filterGas ?? null;
-                      setActiveFilter(key);
-                      if (key) {
-                        window.history.replaceState(null, "", `${pathname}#${key}`);
+                      const filterKey = tabFilterKey(s) ?? null;
+                      setActiveFilter(filterKey);
+                      if (filterKey) {
+                        window.history.replaceState(null, "", `${pathname}#${filterKey}`);
                       } else {
                         window.history.replaceState(null, "", pathname);
                       }

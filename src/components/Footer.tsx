@@ -1,4 +1,5 @@
 import Link from "next/link";
+import HashLink from "@/components/HashLink";
 import { Phone, Mail, MapPin, Globe, Share2, Rss, MessageSquareShare } from "lucide-react";
 import { contact } from "@/config/contact";
 
@@ -30,12 +31,12 @@ const footerSections = [
   {
     title: "Drinks & Flavours",
     links: [
-      { label: "MONIN Syrups", href: "/syrups" },
-      { label: "Sweetbird Syrups", href: "/syrups" },
-      { label: "Simply Syrups", href: "/syrups" },
-      { label: "Purees & Sauces", href: "/syrups" },
-      { label: "Coffee & Blends", href: "/coffee" },
-      { label: "Milk Alternatives", href: "/coffee" },
+      { label: "MONIN Syrups", href: "/syrups#monin" },
+      { label: "Sweetbird Syrups", href: "/syrups#sweetbird" },
+      { label: "Simply Syrups", href: "/syrups#simply" },
+      { label: "Purees & Sauces", href: "/syrups#purees-sauces" },
+      { label: "Coffee & Blends", href: "/coffee#beans" },
+      { label: "Milk Alternatives", href: "/coffee#milk-alternatives" },
     ],
   },
   {
@@ -134,12 +135,21 @@ export default function Footer() {
               <ul className="space-y-2">
                 {sec.links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm hover:text-emerald-400 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href.includes("#") ? (
+                      <HashLink
+                        href={link.href}
+                        className="text-sm hover:text-emerald-400 transition-colors"
+                      >
+                        {link.label}
+                      </HashLink>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm hover:text-emerald-400 transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

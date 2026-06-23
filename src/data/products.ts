@@ -343,6 +343,47 @@ export function filterProductsByChargeSize(items: Product[], size: string): Prod
   return items.filter((p) => re.test(p.name));
 }
 
+export function filterSyrupProducts(items: Product[], key: string): Product[] {
+  switch (key) {
+    case "monin":
+      return items.filter((p) => p.brand === "MONIN");
+    case "sweetbird":
+      return items.filter((p) => p.brand === "Sweetbird");
+    case "simply":
+      return items.filter((p) => p.brand === "Simply" || p.brand === "Simply Syrups");
+    case "purees-sauces":
+      return items.filter(
+        (p) =>
+          /puree|sauce/i.test(p.subCategory ?? "") ||
+          /puree|sauce/i.test(p.name),
+      );
+    default:
+      return items;
+  }
+}
+
+export function filterCoffeeProducts(items: Product[], key: string): Product[] {
+  switch (key) {
+    case "beans":
+      return items.filter(
+        (p) =>
+          (/bean|ground|coffee|roast/i.test(p.name) || /coffee bean|ground filter/i.test(p.subCategory ?? "")) &&
+          !/pod|capsule|milk|alpro|oatly|tea bag/i.test(p.name),
+      );
+    case "pods":
+      return items.filter((p) => /pod|capsule|nespresso|dolce gusto|tassimo/i.test(p.name));
+    case "milk-alternatives":
+      return items.filter(
+        (p) =>
+          p.brand === "Alpro" ||
+          p.brand === "Oatly" ||
+          /milk alternative|plant.?based|oat milk|soya milk|coconut milk|barista milk/i.test(p.name),
+      );
+    default:
+      return items;
+  }
+}
+
 export function getProductsByBrand(brandName: string): Product[] {
   return products.filter((p) => p.brand === brandName);
 }

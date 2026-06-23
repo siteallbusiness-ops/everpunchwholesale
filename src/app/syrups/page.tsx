@@ -1,13 +1,20 @@
 import { getProductsByCategory } from "@/data/products";
-import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
-import Link from "next/link";
+import CategoryProductListing, { type SubCategoryTab } from "@/components/CategoryProductListing";
+import HashLink from "@/components/HashLink";
+
+const subCategories: SubCategoryTab[] = [
+  { label: "MONIN", href: "#monin", filterKey: "monin" },
+  { label: "Sweetbird", href: "#sweetbird", filterKey: "sweetbird" },
+  { label: "Simply", href: "#simply", filterKey: "simply" },
+  { label: "Purees & Sauces", href: "#purees-sauces", filterKey: "purees-sauces" },
+];
 
 const syrupBrands = [
-  { name: "MONIN", desc: "World's #1 syrup brand. 200+ flavours.", href: "#monin" },
-  { name: "Sweetbird", desc: "Natural flavours for modern baristas.", href: "#sweetbird" },
-  { name: "Simply", desc: "Great taste at a great price.", href: "#simply" },
-  { name: "Boba Lish", desc: "Authentic bubble tea syrups.", href: "#boba" },
+  { name: "MONIN", desc: "World's #1 syrup brand. 200+ flavours.", href: "/syrups#monin" },
+  { name: "Sweetbird", desc: "Natural flavours for modern baristas.", href: "/syrups#sweetbird" },
+  { name: "Simply", desc: "Great taste at a great price.", href: "/syrups#simply" },
+  { name: "Purees & Sauces", desc: "Fruit purees and gourmet sauces.", href: "/syrups#purees-sauces" },
 ];
 
 export default function SyrupsPage() {
@@ -21,18 +28,27 @@ export default function SyrupsPage() {
         crumbs={[{ label: "Syrups & Flavourings" }]}
       />
       <div className="max-w-7xl mx-auto px-4 py-10">
-        {/* Brand quick-links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {syrupBrands.map((b) => (
-            <Link key={b.name} href={b.href} className="bg-white border border-gray-200 hover:border-emerald-300 rounded-xl p-4 group transition-all">
-              <div className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors mb-1">{b.name}</div>
+            <HashLink
+              key={b.name}
+              href={b.href}
+              className="bg-white border border-gray-200 hover:border-emerald-300 rounded-xl p-4 group transition-all"
+            >
+              <div className="font-bold text-gray-900 group-hover:text-emerald-600 transition-colors mb-1">
+                {b.name}
+              </div>
               <div className="text-xs text-gray-500">{b.desc}</div>
-            </Link>
+            </HashLink>
           ))}
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {items.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+
+        <CategoryProductListing
+          products={items}
+          subCategories={subCategories}
+          filterMode="syrup"
+          emptyMessage="No syrups match this filter. Try another brand or view all."
+        />
       </div>
     </>
   );

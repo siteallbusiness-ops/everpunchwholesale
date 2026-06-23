@@ -34,12 +34,20 @@ const navLinks = [
 ];
 
 function subLinkHash(sub: string) {
-  const gasMap: Record<string, string> = {
+  const hashMap: Record<string, string> = {
     "n2o refill": "n2o",
     "co2 refill": "co2",
+    "purees & sauces": "purees-sauces",
+    "coffee beans": "beans",
+    "milk alternatives": "milk-alternatives",
+    monin: "monin",
+    sweetbird: "sweetbird",
+    simply: "simply",
+    pods: "pods",
   };
   const key = sub.toLowerCase();
-  return gasMap[key] ?? key.replace(/\s+/g, "-");
+  if (hashMap[key]) return hashMap[key];
+  return key.replace(/\s+/g, "-").replace(/&/g, "").replace(/--+/g, "-").replace(/-$/, "");
 }
 
 /** Same-page hash links must replace the fragment — Next.js Link appends otherwise. */
