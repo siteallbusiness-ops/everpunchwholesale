@@ -12,7 +12,7 @@ export default function HeroBanner() {
               ⚡ UK&apos;s #1 Barista &amp; Bartender Supply
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-              Premium N2O Chargers
+              Premium Refill Chargers
               <br />
               <span className="text-emerald-400">At Wholesale Prices</span>
             </h1>

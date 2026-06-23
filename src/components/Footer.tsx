@@ -49,7 +49,7 @@ const footerSections = [
 ];
 
 const paymentMethods = ["Visa", "Mastercard", "PayPal", "Apple Pay", "Klarna", "AMEX"];
-const certifications = ["Trustpilot ★★★★★", "SSL Secure", "UK Registered"];
+const certifications = ["Verified ★★★★★", "SSL Secure", "UK Registered"];
 
 export default function Footer() {
   return (
@@ -90,7 +90,7 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-sm leading-relaxed text-gray-400 max-w-xs">
-                The UK&apos;s leading distributor of N2O refill chargers, dispensers, flavouring syrups
+                The UK&apos;s leading distributor of refill chargers, dispensers, flavouring syrups
                 and professional bar supplies. Trusted by over 50,000 customers since 2009.
               </p>
             </div>
