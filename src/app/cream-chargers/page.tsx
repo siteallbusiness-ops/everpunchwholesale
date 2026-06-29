@@ -6,6 +6,7 @@ import Link from "next/link";
 const subCategories: SubCategoryTab[] = [
   { label: "N2O Refill", href: "#n2o", filterGas: "n2o" },
   { label: "CO2 Refill", href: "#co2", filterGas: "co2" },
+  { label: "N2 Refill", href: "#n2", filterGas: "n2" },
   { label: "8g", href: "#8g", filterSize: "8g" },
   { label: "12g", href: "#12g", filterSize: "12g" },
   { label: "16g", href: "#16g", filterSize: "16g" },
@@ -13,6 +14,11 @@ const subCategories: SubCategoryTab[] = [
   { label: "640g", href: "#640g", filterSize: "640g" },
   { label: "Bulk / Wholesale", href: "/wholesale" },
 ];
+
+const FILTER_NOTICES: Record<string, string> = {
+  "640g":
+    "You can only purchase up to 3 single units without a verified company account. Cases of 6 and trade volumes require account verification or a wholesale enquiry.",
+};
 
 export default function CreamChargersPage() {
   const chargers = getRefillChargerProducts();
@@ -60,6 +66,7 @@ export default function CreamChargersPage() {
         <CategoryProductListing
           products={chargers}
           subCategories={subCategories}
+          filterNotices={FILTER_NOTICES}
           emptyMessage="No refill chargers match this filter. Try another option or view all."
         />
 

@@ -2,7 +2,7 @@ import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import PageHeader from "@/components/PageHeader";
 import { Heart, Star, Truck, Shield, RefreshCw, CheckCircle } from "lucide-react";
-import AddToBasketButton from "@/components/AddToBasketButton";
+import ProductPurchasePanel from "@/components/ProductPurchasePanel";
 import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
@@ -22,7 +22,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <>
       <PageHeader
         crumbs={[
-          { label: product.category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()), href: `/${product.category}` },
+          {
+            label: product.category === "cream-chargers" ? "Refill Chargers" : product.category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+            href: `/${product.category}`,
+          },
           { label: product.name },
         ]}
         title=""
@@ -100,22 +103,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             )}
 
             {/* Qty + Add to Basket */}
-            <div className="flex gap-3">
-              <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-                <button className="w-10 h-12 text-lg font-bold text-gray-600 hover:bg-gray-50 transition-colors">−</button>
-                <span className="w-10 text-center font-semibold text-gray-900">1</span>
-                <button className="w-10 h-12 text-lg font-bold text-gray-600 hover:bg-gray-50 transition-colors">+</button>
-              </div>
-              <AddToBasketButton
-                productSlug={product.slug}
-                disabled={!product.inStock}
-                size="md"
-                className="flex-1 font-bold"
-              />
-              <button className="w-12 h-12 border border-gray-200 rounded-lg flex items-center justify-center hover:border-red-300 hover:text-red-500 transition-colors">
-                <Heart className="w-5 h-5" />
-              </button>
-            </div>
+            <ProductPurchasePanel product={product} />
 
             {/* Delivery badges */}
             <div className="grid grid-cols-3 gap-3">

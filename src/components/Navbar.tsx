@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import HashLink from "@/components/HashLink";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, Phone, Heart,
 } from "lucide-react";
@@ -13,7 +13,7 @@ const navLinks = [
   {
     label: "Refill Chargers",
     href: "/cream-chargers",
-    sub: ["N2O Refill", "CO2 Refill", "8g", "12g", "16g", "88g", "640g"],
+    sub: ["N2O Refill", "CO2 Refill", "N2 Refill", "8g", "12g", "16g", "88g", "640g"],
   },
   {
     label: "Dispensers",
@@ -37,6 +37,7 @@ function subLinkHash(sub: string) {
   const hashMap: Record<string, string> = {
     "n2o refill": "n2o",
     "co2 refill": "co2",
+    "n2 refill": "n2",
     "purees & sauces": "purees-sauces",
     "coffee beans": "beans",
     "milk alternatives": "milk-alternatives",
@@ -50,26 +51,7 @@ function subLinkHash(sub: string) {
   return key.replace(/\s+/g, "-").replace(/&/g, "").replace(/--+/g, "-").replace(/-$/, "");
 }
 
-/** Same-page hash links must replace the fragment — Next.js Link appends otherwise. */
-function handleSubLinkClick(
-  e: React.MouseEvent<HTMLAnchorElement>,
-  pathname: string,
-  href: string,
-) {
-  const hashIndex = href.indexOf("#");
-  if (hashIndex === -1) return;
-
-  const path = href.slice(0, hashIndex);
-  const hash = href.slice(hashIndex + 1);
-  if (!hash || pathname !== path) return;
-
-  e.preventDefault();
-  window.history.replaceState(null, "", href);
-  window.dispatchEvent(new HashChangeEvent("hashchange"));
-}
-
 export default function Navbar() {
-  const pathname = usePathname();
   const { itemCount } = useCart();
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -222,14 +204,13 @@ export default function Navbar() {
                     {link.sub.map((sub) => {
                       const subHref = `${link.href}#${subLinkHash(sub)}`;
                       return (
-                        <Link
+                        <HashLink
                           key={sub}
                           href={subHref}
-                          onClick={(e) => handleSubLinkClick(e, pathname, subHref)}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
                         >
                           {sub}
-                        </Link>
+                        </HashLink>
                       );
                     })}
                   </div>

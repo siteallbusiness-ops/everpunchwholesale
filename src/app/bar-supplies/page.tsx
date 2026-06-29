@@ -10,7 +10,7 @@ export default function BarSuppliesPage() {
     <>
       <PageHeader
         title="Bar Supplies"
-        subtitle="Professional cocktail tools, soda siphons, CO2 cartridges and bar accessories for every bartender"
+        subtitle="Professional cocktail tools, soda siphons and bar accessories for every bartender"
         crumbs={[{ label: "Bar Supplies" }]}
       />
       <div className="max-w-7xl mx-auto px-4 py-10">

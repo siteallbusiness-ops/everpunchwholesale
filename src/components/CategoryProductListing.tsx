@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Product } from "@/data/products";
@@ -20,7 +20,7 @@ export type SubCategoryTab = {
   /** @deprecated use filterKey — filters by cartridge size */
   filterSize?: string;
   /** @deprecated use filterKey — filters by gas type */
-  filterGas?: "co2" | "n2o";
+  filterGas?: "co2" | "n2o" | "n2";
 };
 
 export type ProductFilterMode = "refill" | "syrup" | "coffee";
@@ -37,6 +37,7 @@ type Props = {
   products: Product[];
   subCategories?: SubCategoryTab[];
   filterMode?: ProductFilterMode;
+  filterNotices?: Record<string, string>;
   emptyMessage?: string;
 };
 
@@ -44,20 +45,20 @@ export default function CategoryProductListing({
   products: allProducts,
   subCategories = [],
   filterMode = "refill",
+  filterNotices = {},
   emptyMessage = "No products match this filter.",
 }: Props) {
   const pathname = usePathname();
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  useEffect(() => {
-    function syncFromHash(scroll = false) {
+  const syncFromHash = useMemo(
+    () => (scroll = false) => {
       const raw = window.location.hash.replace(/^#/, "");
       if (!raw) {
         setActiveFilter(null);
         return;
       }
-      // Prefer the last matching segment (handles malformed URLs like #640g#8g)
-      const segments = raw.split("#");
+      const segments = raw.split("#").filter(Boolean);
       for (let i = segments.length - 1; i >= 0; i--) {
         const tab = subCategories.find((s) => tabFilterKey(s) === segments[i]);
         const key = tab ? tabFilterKey(tab) : undefined;
@@ -68,12 +69,19 @@ export default function CategoryProductListing({
         }
       }
       setActiveFilter(null);
-    }
-    syncFromHash(true);
+    },
+    [subCategories],
+  );
+
+  useLayoutEffect(() => {
+    syncFromHash(false);
+  }, [syncFromHash, pathname]);
+
+  useEffect(() => {
     const onHashChange = () => syncFromHash(true);
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, [subCategories]);
+  }, [syncFromHash]);
 
   const filtered = useMemo(() => {
     if (!activeFilter) return allProducts;
@@ -83,7 +91,9 @@ export default function CategoryProductListing({
       case "coffee":
         return filterCoffeeProducts(allProducts, activeFilter);
       default: {
-        const gasTab = subCategories.find((s) => s.filterGas === activeFilter);
+        const gasTab = subCategories.find(
+          (s) => tabFilterKey(s) === activeFilter && s.filterGas,
+        );
         if (gasTab?.filterGas) {
           return filterProductsByGasType(allProducts, gasTab.filterGas);
         }
@@ -94,6 +104,8 @@ export default function CategoryProductListing({
 
   const activeLabel =
     subCategories.find((s) => tabFilterKey(s) === activeFilter)?.label ?? activeFilter;
+
+  const activeNotice = activeFilter ? filterNotices[activeFilter] : undefined;
 
   return (
     <>
@@ -157,6 +169,12 @@ export default function CategoryProductListing({
               })}
             </div>
           </div>
+        </div>
+      )}
+
+      {activeNotice && (
+        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-900">
+          {activeNotice}
         </div>
       )}
 

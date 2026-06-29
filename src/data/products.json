@@ -12103,5 +12103,23 @@
     "sku": "smartwhip-n2o-cylinders-6-x-640g",
     "inStock": true,
     "category": "8g N2O Cream Chargers"
+  },
+  {
+    "name": "EverPunch CO2 Cylinder (640g)",
+    "productUrl": "https://www.discountcream.co.uk/co2-cylinder-640g",
+    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/fast-gas-cylinder-FAGA001-003_150x150.jpg",
+    "price": "£17.99(£21.59 inc VAT)",
+    "sku": "co2-cylinder-640g",
+    "inStock": true,
+    "category": "200g-670g Cylinders"
+  },
+  {
+    "name": "EverPunch CO2 Cylinders (6 x 640g)",
+    "productUrl": "https://www.discountcream.co.uk/co2-cylinders-6-x-640g",
+    "imageUrl": "https://www.discountcream.co.uk/images/virtuemart/product/resized/fast-gas-cylinder-FAGA001-006_150x150.jpg",
+    "price": "£98.94(£118.73 inc VAT)",
+    "sku": "co2-cylinders-6-x-640g",
+    "inStock": true,
+    "category": "200g-670g Cylinders"
   }
 ]

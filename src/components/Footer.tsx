@@ -9,11 +9,11 @@ const footerSections = [
     links: [
       { label: "N2O Refill", href: "/cream-chargers#n2o" },
       { label: "CO2 Refill", href: "/cream-chargers#co2" },
+      { label: "N2 Refill", href: "/cream-chargers#n2" },
       { label: "8g", href: "/cream-chargers#8g" },
       { label: "12g", href: "/cream-chargers#12g" },
       { label: "16g", href: "/cream-chargers#16g" },
       { label: "88g", href: "/cream-chargers#88g" },
-      { label: "200g", href: "/cream-chargers#200g" },
       { label: "640g", href: "/cream-chargers#640g" },
       { label: "Bulk / Wholesale", href: "/wholesale" },
     ],
@@ -23,7 +23,7 @@ const footerSections = [
     links: [
       { label: "Cream Dispensers", href: "/cream-dispensers" },
       { label: "Soda Siphons", href: "/bar-supplies" },
-      { label: "CO2 Cartridges", href: "/bar-supplies" },
+      { label: "CO2 Refill Cartridges", href: "/cream-chargers#co2" },
       { label: "Bar Supplies", href: "/bar-supplies" },
       { label: "Accessories", href: "/cream-dispensers" },
     ],

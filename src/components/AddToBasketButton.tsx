@@ -26,7 +26,8 @@ export default function AddToBasketButton({
     e.preventDefault();
     e.stopPropagation();
     if (disabled || added) return;
-    addItem(productSlug, quantity);
+    const success = addItem(productSlug, quantity);
+    if (!success) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }

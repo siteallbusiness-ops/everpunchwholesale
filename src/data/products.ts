@@ -21,6 +21,11 @@ export interface Product {
   packSize?: string;
   weight?: string;
   isOnSale?: boolean;
+  /** Primary cartridge/cylinder size, e.g. 8g, 12g, 640g */
+  chargeSize?: string;
+  gasType?: "n2o" | "co2" | "n2";
+  packOption?: "single" | "case-of-6";
+  is640gCylinder?: boolean;
 }
 
 export interface Brand {
@@ -49,9 +54,9 @@ const CATEGORY_MAP: Record<string, string> = {
   "Cream Chargers": "cream-chargers",
   "8g N2O Cream Chargers": "cream-chargers",
   "8g N2O Cream Chargers (Bulk)": "cream-chargers",
-  "8g CO2 Chargers": "bar-supplies",
-  "12g CO2 Chargers": "bar-supplies",
-  "16g CO2 Chargers": "bar-supplies",
+  "8g CO2 Chargers": "cream-chargers",
+  "12g CO2 Chargers": "cream-chargers",
+  "16g CO2 Chargers": "cream-chargers",
   "N2 Nitro Chargers": "cream-chargers",
   "SALE": "cream-chargers",
   "500ml Cream Whipper": "cream-dispensers",
@@ -173,7 +178,7 @@ const CATEGORY_MAP: Record<string, string> = {
 // ─── Brand extraction ────────────────────────────────────────────────────────
 
 const KNOWN_BRANDS = [
-  "MONIN", "Sweetbird", "Simply Syrups", "Simply", "Lavazza", "iSi", "MOSA",
+  "EverPunch", "MONIN", "Sweetbird", "Simply Syrups", "Simply", "Lavazza", "iSi", "MOSA",
   "Pro Whip", "SmartWhip", "Fast Gas", "FastGas", "AMOR", "Alpro", "LISS", "Liss",
   "Umarex", "Pro Fizz", "Cream Deluxe", "Nescafe", "Nescafé", "Douwe Egberts",
   "Taylors", "Beanies", "Kenco", "Shmoo", "Puramate", "Tetley", "PG Tips",
@@ -240,7 +245,9 @@ function pseudoReviews(id: number): number {
   return 12 + (id * 37 + id % 13) % 980;
 }
 
-// ─── Resolve category slug (handles mis-tagged source data) ─────────────────
+// ─── Product metadata extraction ─────────────────────────────────────────────
+
+export const SINGLE_UNIT_640G_LIMIT = 3;
 
 type RawProduct = {
   name: string;
@@ -252,21 +259,88 @@ type RawProduct = {
   category: string;
 };
 
+export function extractChargeSize(name: string): string | undefined {
+  const packMatch = name.match(/(?:\d+\s*x\s*|x\s*)(\d+(?:\.\d+)?g)\b/i);
+  if (packMatch) return packMatch[1].toLowerCase();
+
+  const parenMatch = name.match(/\((\d+(?:\.\d+)?g)\)/i);
+  if (parenMatch) return parenMatch[1].toLowerCase();
+
+  const cylinderMatch = name.match(/\b(\d+(?:\.\d+)?g)\s+cylinder/i);
+  if (cylinderMatch) return cylinderMatch[1].toLowerCase();
+
+  const tankMatch = name.match(/\b(\d+(?:\.\d+)?g)\s+tank/i);
+  if (tankMatch) return tankMatch[1].toLowerCase();
+
+  const sizes = [...name.matchAll(/\b(\d+(?:\.\d+)?g)\b/gi)].map((m) => m[1].toLowerCase());
+  if (!sizes.length) return undefined;
+
+  const priority = ["640g", "670g", "580g", "200g", "88g", "45g", "16g", "12g", "8.5g", "8.4g", "8g", "2.4g", "2.2g"];
+  for (const size of priority) {
+    if (sizes.includes(size)) return size;
+  }
+  return sizes[0];
+}
+
+export function extractGasType(name: string): Product["gasType"] {
+  if (/\bCO2\b/i.test(name)) return "co2";
+  if (/\bN2O\b|cream charger/i.test(name)) return "n2o";
+  if (/\bn2\b(?!o)|nitro charger/i.test(name)) return "n2";
+  return undefined;
+}
+
+export function extractPackOption(name: string): Product["packOption"] | undefined {
+  if (/\(\s*6\s*x\s*640g\s*\)|\b6\s*x\s*640g\b/i.test(name)) return "case-of-6";
+  if (/\b640g\b/i.test(name) && /cylinder/i.test(name)) return "single";
+  return undefined;
+}
+
+export function is640gCylinderProduct(name: string): boolean {
+  return /\b640g\b/i.test(name) && /cylinder/i.test(name);
+}
+
+function isBarSupplyAccessory(name: string): boolean {
+  return /tyre inflator|retro co2 cartridge holder|decorator tip|charger holder|pressure discharge nozzle|pressure.?regulator/i.test(
+    name,
+  );
+}
+
+function isDispenserProduct(name: string): boolean {
+  return /whipper|dispenser|siphon|bundle|decorator tip/i.test(name) && !/cylinder|charger|cartridge/i.test(name);
+}
+
+function isFastGasProduct(name: string): boolean {
+  if (is640gCylinderProduct(name)) return false;
+  return /fast\s*gas|670g|580g|200g.*(tank|cylinder)|gold\s*whip.*200/i.test(name);
+}
+
+// ─── Resolve category slug (handles mis-tagged source data) ─────────────────
+
 function resolveCategory(raw: RawProduct): string | undefined {
   const mapped = CATEGORY_MAP[raw.category];
   if (!mapped) return undefined;
 
-  if (raw.category === "Cream Chargers") {
-    const name = raw.name;
-    // 12g, 16g and 88g CO2 cartridges belong in refill chargers; only 8g soda/tyre CO2 goes to bar-supplies
-    if (/CO2/i.test(name) && !/\b(12g|16g|88g)\b/i.test(name)) return "bar-supplies";
-    if (/whipper|dispenser|siphon|decorator tip|bundle/i.test(name)) return "cream-dispensers";
-    if (/fast\s*gas|640g|670g|580g|200g.*(tank|cylinder)|gold\s*whip.*200|mr\s*\-?\s*whip.*640/i.test(name)) {
-      return "fast-gas";
-    }
+  const name = raw.name;
+
+  if (isBarSupplyAccessory(name)) return "bar-supplies";
+  if (isDispenserProduct(name)) return "cream-dispensers";
+  if (is640gCylinderProduct(name)) return "cream-chargers";
+  if (isFastGasProduct(name)) return "fast-gas";
+
+  if (
+    mapped === "cream-chargers" ||
+    raw.category === "Cream Chargers" ||
+    raw.category === "8g CO2 Chargers" ||
+    raw.category === "12g CO2 Chargers" ||
+    raw.category === "16g CO2 Chargers" ||
+    raw.category === "8g N2O Cream Chargers" ||
+    raw.category === "8g N2O Cream Chargers (Bulk)" ||
+    raw.category === "N2 Nitro Chargers"
+  ) {
+    if (/\bCO2\b/i.test(name) && /cartridge|charger/i.test(name)) return "cream-chargers";
+    if (/\bn2\b(?!o)|nitro charger/i.test(name)) return "cream-chargers";
     if (/N2O|cream charger/i.test(name)) return "cream-chargers";
-    if (/nitro/i.test(name)) return "bar-supplies";
-    return "cream-chargers";
+    if (extractGasType(name)) return "cream-chargers";
   }
 
   return mapped;
@@ -281,6 +355,11 @@ export const products: Product[] = (rawProducts as RawProduct[])
     const category = resolveCategory(raw)!;
     const { salePrice, originalPrice, discount } = parsePrice(raw.price);
     const brand = extractBrand(raw.name);
+    const chargeSize = extractChargeSize(raw.name);
+    const gasType = extractGasType(raw.name);
+    const packOption = extractPackOption(raw.name);
+    const is640gCylinder = is640gCylinderProduct(raw.name);
+    const packSize = packOption === "case-of-6" ? "Case of 6" : packOption === "single" && is640gCylinder ? "1 unit" : undefined;
 
     return {
       id,
@@ -301,6 +380,12 @@ export const products: Product[] = (rawProducts as RawProduct[])
       description: `${raw.name} — premium quality from ${brand}. Available for next day UK delivery.`,
       features: CATEGORY_FEATURES[category] ?? ["UK stock", "Fast dispatch", "Genuine product"],
       isOnSale: discount >= 15,
+      chargeSize,
+      gasType,
+      packOption,
+      is640gCylinder,
+      packSize,
+      weight: chargeSize,
     };
   });
 
@@ -310,37 +395,68 @@ export function getProductsByCategory(slug: string): Product[] {
   return products.filter((p) => p.category === slug);
 }
 
-/** All N2O and CO2 refill cartridges for the Refill Chargers listing */
+/** All refill cartridges and 640g cylinders for the Refill Chargers listing */
 export function getRefillChargerProducts(): Product[] {
-  return products.filter(
-    (p) =>
-      p.category === "cream-chargers" ||
-      (p.category === "bar-supplies" && /\bCO2\b/i.test(p.name)),
-  );
+  return products.filter((p) => p.category === "cream-chargers");
 }
 
 export function isCo2RefillProduct(product: Product): boolean {
-  return /\bCO2\b/i.test(product.name);
+  return product.gasType === "co2" || /\bCO2\b/i.test(product.name);
 }
 
 export function isN2oRefillProduct(product: Product): boolean {
   if (isCo2RefillProduct(product)) return false;
-  return /\bN2O\b|cream charger|nitro charger/i.test(product.name);
+  return product.gasType === "n2o" || /\bN2O\b|cream charger/i.test(product.name);
+}
+
+export function isN2RefillProduct(product: Product): boolean {
+  if (isCo2RefillProduct(product) || isN2oRefillProduct(product)) return false;
+  return product.gasType === "n2" || /\bn2\b(?!o)|nitro charger/i.test(product.name);
+}
+
+export function isSingleUnit640gCylinder(product: Product): boolean {
+  return Boolean(product.is640gCylinder && product.packOption === "single");
 }
 
 export function filterProductsByGasType(
   items: Product[],
-  gas: "co2" | "n2o",
+  gas: "co2" | "n2o" | "n2",
 ): Product[] {
-  return items.filter((p) =>
-    gas === "co2" ? isCo2RefillProduct(p) : isN2oRefillProduct(p),
-  );
+  switch (gas) {
+    case "co2":
+      return items.filter(isCo2RefillProduct);
+    case "n2":
+      return items.filter(isN2RefillProduct);
+    default:
+      return items.filter(isN2oRefillProduct);
+  }
 }
 
+const SIZE_FILTER_ALIASES: Record<string, string[]> = {
+  "8g": ["8g", "8.4g", "8.5g"],
+};
+
 export function filterProductsByChargeSize(items: Product[], size: string): Product[] {
-  const escaped = size.replace(".", "\\.");
-  const re = new RegExp(`\\b${escaped}\\b`, "i");
-  return items.filter((p) => re.test(p.name));
+  const normalized = size.toLowerCase();
+  const accepted = SIZE_FILTER_ALIASES[normalized] ?? [normalized];
+
+  return items.filter((p) => {
+    if (p.chargeSize) return accepted.includes(p.chargeSize);
+    const escaped = normalized.replace(".", "\\.");
+    const re = new RegExp(`\\b${escaped}\\b`, "i");
+    return re.test(p.name);
+  });
+}
+
+export function get640gCylinderVariants(product: Product): Product[] {
+  if (!product.is640gCylinder || !product.gasType) return [];
+  return products.filter(
+    (p) =>
+      p.is640gCylinder &&
+      p.gasType === product.gasType &&
+      p.brand === product.brand &&
+      p.id !== product.id,
+  );
 }
 
 export function filterSyrupProducts(items: Product[], key: string): Product[] {
@@ -403,7 +519,7 @@ export const categories: Category[] = [
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop",
     icon: "🫧",
     count: countByCategory("cream-chargers"),
-    subcategories: ["N2O Refill", "CO2 Refill", "8g", "12g", "16g", "88g", "200g", "640g"],
+    subcategories: ["N2O Refill", "CO2 Refill", "N2 Refill", "8g", "12g", "16g", "88g", "640g"],
   },
   {
     id: 2,
@@ -453,7 +569,7 @@ export const categories: Category[] = [
     image: "https://images.unsplash.com/photo-1546171753-97d7676e4602?w=600&h=400&fit=crop",
     icon: "🍸",
     count: countByCategory("bar-supplies"),
-    subcategories: ["Cocktail Tools", "Soda Siphons", "CO2 Cartridges", "Ice"],
+    subcategories: ["Cocktail Tools", "Soda Siphons", "Ice"],
   },
 ];
 
